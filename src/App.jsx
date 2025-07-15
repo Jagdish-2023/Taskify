@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginAndSignUp from "./pages/LoginAndSignup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Todo from "./pages/Todo";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/todo/:todoId",
+      element: <Todo />,
     },
   ]);
 
