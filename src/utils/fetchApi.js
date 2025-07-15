@@ -33,7 +33,7 @@ const fetchApi = async (
       return;
     }
 
-    throw new Error(error.response?.data || "Something went wrong");
+    throw new Error(error.response?.data?.error || "Something went wrong");
   }
 };
 

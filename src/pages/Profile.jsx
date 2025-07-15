@@ -2,10 +2,28 @@ import { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserInfoAsync } from "../features/slice/todoSlice";
+import { backendUrl } from "../utils/fetchApi";
+import axios from "axios";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { userInfo, status, error } = useSelector((state) => state.todos);
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        window.location.href = "/";
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (!userInfo) {
@@ -34,12 +52,18 @@ const Profile = () => {
             <div className="mt-3">
               <p>
                 <strong>Name: </strong>
-                {userInfo.name}
+                {userInfo.fullName}
               </p>
               <p>
                 <strong>Email: </strong>
                 {userInfo.email}
               </p>
+            </div>
+
+            <div>
+              <button className="btn btn-sm btn-danger" onClick={handleLogout}>
+                Logout
+              </button>
             </div>
           </div>
         )}

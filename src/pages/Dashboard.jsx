@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { createTodoAsync, fetchTodosAsync } from "../features/slice/todoSlice";
+import { useNavigate } from "react-router-dom";
 
 const getTodoDate = (dateObj) => {
   const date = new Date(dateObj);
@@ -9,6 +10,7 @@ const getTodoDate = (dateObj) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { todos, status, error } = useSelector((state) => state.todos);
   const [todoTitle, settodoTitle] = useState("");
@@ -16,6 +18,10 @@ const Dashboard = () => {
   const addNewTodo = () => {
     dispatch(createTodoAsync({ title: todoTitle }));
     settodoTitle("");
+  };
+
+  const handleTodoCard = (todoId) => {
+    navigate(`/todo/${todoId}`);
   };
 
   useEffect(() => {
@@ -49,20 +55,30 @@ const Dashboard = () => {
         </div>
 
         <section className="mt-5">
-          <div className="row">
-            {todos.map((todo) => (
-              <div className="col-md-3" key={todo._id}>
-                <div className="card">
-                  <h5 className="card-header">{todo.title}</h5>
-                  <div className="card-body">
-                    <p className="card-text">
-                      Date: {getTodoDate(todo.createdAt)}
-                    </p>
+          {todos.length > 0 ? (
+            <div className="row">
+              {todos.map((todo) => (
+                <div className="col-md-3" key={todo._id}>
+                  <div
+                    className="card"
+                    onClick={() => handleTodoCard(todo._id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <h5 className="card-header">{todo.title}</h5>
+                    <div className="card-body">
+                      <p className="card-text">
+                        Date: {getTodoDate(todo.createdAt)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <p className="text-muted text-center">No Todos yet created</p>
+            </div>
+          )}
         </section>
       </main>
     </>

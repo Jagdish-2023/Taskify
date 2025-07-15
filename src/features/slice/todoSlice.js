@@ -3,16 +3,17 @@ import fetchApi from "../../utils/fetchApi";
 
 export const signUpUserAsync = createAsyncThunk(
   "user/signup",
-  async (signUpData) => {
-    return await fetchApi("POST", "/auth/v1/signup", signUpData);
-  }
+  async (signUpData) => await fetchApi("POST", "/auth/v1/signup", signUpData)
 );
 
 export const signInUserAsync = createAsyncThunk(
   "user/signin",
-  async (signInData) => {
-    return await fetchApi("POST", "/auth/v1/signin", signInData);
-  }
+  async (signInData) => await fetchApi("POST", "/auth/v1/signin", signInData)
+);
+
+export const signInGuestUserAsync = createAsyncThunk(
+  "guest/signIn",
+  async () => await fetchApi("POST", "/auth/guest/signin", {})
 );
 
 export const fetchUserInfoAsync = createAsyncThunk(
@@ -54,6 +55,33 @@ export const todoSlice = createSlice({
     });
     builder.addCase(signUpUserAsync.rejected, (state, action) => {
       state.error = "error";
+      state.error = action.error.message;
+    });
+
+    builder.addCase(signInUserAsync.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(signInUserAsync.fulfilled, (state, action) => {
+      const { user } = action.payload;
+      state.status = "success";
+      state.userInfo = user;
+    });
+    builder.addCase(signInUserAsync.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.error.message;
+    });
+
+    builder.addCase(signInGuestUserAsync.pending, (state, action) => {
+      state.status = "success";
+    });
+    builder.addCase(signInGuestUserAsync.fulfilled, (state, action) => {
+      const { user } = action.payload;
+      state.status = "success";
+      state.userInfo = user;
+    });
+    builder.addCase(signInGuestUserAsync.rejected, (state, action) => {
+      state.status = "error";
+
       state.error = action.error.message;
     });
 

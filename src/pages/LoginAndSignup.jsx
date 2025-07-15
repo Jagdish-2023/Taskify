@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import "../css/loginSignup.css";
 import {
   signUpUserAsync,
   signInUserAsync,
   removeLoginFormError,
+  signInGuestUserAsync,
 } from "../features/slice/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -31,9 +31,7 @@ const LoginAndSignUp = () => {
   const [password, setPassword] = useState("");
 
   const handleGuestLogin = () => {
-    const email = "john@gmail.com";
-    const password = "John@123";
-    dispatch(signInUserAsync({ email, password }));
+    dispatch(signInGuestUserAsync());
     setEmail("");
     setPassword("");
     setFullName("");
@@ -86,6 +84,11 @@ const LoginAndSignUp = () => {
     if (userInfo) {
       setIsSignup(false);
       setIsAccountCreated(true);
+      setEmail("");
+      setPassword("");
+      setFullName("");
+
+      navigate("/dashboard");
     }
   }, [userInfo]);
 
@@ -97,9 +100,12 @@ const LoginAndSignUp = () => {
       >
         <div className="col-md-3 border rounded-4 bg-white p-4">
           <div>
-            <p className="fs-5 text-center" style={{ color: "rgb(125 7 255)" }}>
+            <h1
+              className="fs-5 text-center"
+              style={{ color: "rgb(125 7 255)" }}
+            >
               Taskify
-            </p>
+            </h1>
             {!isAccountCreated && (
               <div>
                 {" "}
@@ -108,8 +114,14 @@ const LoginAndSignUp = () => {
                     ? "Register a new account"
                     : "Log in to your account"}
                 </p>
-                <p className="text-center" style={{ marginTop: "0.5rem" }}>
-                  Please enter your details
+                <p
+                  className="text-center text-danger"
+                  style={{
+                    marginTop: "0.5rem",
+                    fontSize: "0.7rem",
+                  }}
+                >
+                  Must allow third-party cookies on browser
                 </p>{" "}
               </div>
             )}
@@ -223,23 +235,6 @@ const LoginAndSignUp = () => {
                 </div>
               </div>
             </form>
-          )}
-
-          {isAccountCreated && (
-            <div>
-              <p className="text-success fs-5 text-center">
-                Account registered successfully
-              </p>
-              <p
-                className="text-center"
-                onClick={() => {
-                  setIsSignup(false);
-                  setIsAccountCreated(false);
-                }}
-              >
-                Return to Login
-              </p>
-            </div>
           )}
 
           {error && status === "error" && (
